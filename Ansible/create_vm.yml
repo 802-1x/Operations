@@ -1,0 +1,49 @@
+---
+# create a new VM from a template
+
+- name: Create VM from Windows 2012 Template
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars_files:
+    - vault.yml
+  vars:
+    vcenter_hostname: hostname
+    vcenter_port: 453
+    vcenter_user: "{{ username }}"
+    vcenter_pass: "{{ password }}"
+    esxhost: host.fqdn
+    datastore: datastorename
+    vmtemplate: Windows Server 2012
+    name: "name"
+    notes: Created with Ansible
+    dumpfacts: False
+  tasks:
+    - name: Create VM from Windows 2012 Template
+      vmware_guest:
+        validate_certs: False
+        folder: IT/Dev
+        hostname: "{{ vcenter_hostname }}"
+        port: "{{ vcenter_port }}"
+        username: "{{ vcenter_user }}"
+        password: "{{ vcenter_pass }}"
+        esxi_hostname: "{{ esxhost }}"
+        datacenter: datacentrename
+        name: "{{ name }}"
+        template: "{{ vmtemplate }}"
+        disk:
+          - size_gb: "{{ disk_size | default(40) }}"
+            type: thin
+            datastore: "{{ datastore }}"
+        networks:
+        - name: VM Network
+          type: dhcp
+        hardware:
+          memory_mb: "{{ vm_memory | default(4096) }}"
+        wait_for_ip_address: True
+        state: present
+      register: name
+
+    - name: IP address info
+      debug:
+        msg: "{{ name.instance.ipv4 }} {{ name }}"
