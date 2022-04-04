@@ -1,0 +1,6 @@
+#Inventory
+[VeeamProxy]
+proxyserver1name.fqdn
+proxyserver2name.fqdn
+[winclient]
+WIN-5SEMKHJFK63
