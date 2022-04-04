@@ -1,0 +1,15 @@
+# If a reboot is required, the second task will trigger one and wait until the host is available.
+- hosts: winclient
+  gather_facts: no
+  tasks:
+  - win_domain_membership:
+      dns_domain_name: <fqdn>
+      hostname: WIN-5SEMKHJFK63
+      domain_admin_user: netbios\user
+      domain_admin_password: password
+      domain_ou_path: "OU DN PATH"
+      state: domain
+    register: domain_state
+
+  - win_reboot:
+    when: domain_state.reboot_required
