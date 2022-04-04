@@ -1,0 +1,14 @@
+# windows-updates-all.yml
+- name: Run Windows Updates on Server Core 
+hosts: 
+connection: winrm
+
+tasks:
+  - name: Install all critical and security updates
+  win_updates:
+    category_names:
+    - CriticalUpdates
+    - SecurityUpdates
+    - UpdateRollups
+    state: installed
+  register: update_result
